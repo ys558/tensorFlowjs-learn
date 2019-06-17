@@ -14,8 +14,9 @@ function createModel(){
     model = tf.sequential()
     createLogEntry(`Model created`)
 
-    createLogEntry(`Add layers`)
+    createLogEntry(`Add layers...`)
     model.add(tf.layers.conv2d({
+        inputShape: [28,28,1],
         kernelSize: 5,
         filters: 8,
         strides: 1,
@@ -28,7 +29,21 @@ function createModel(){
         strides: [2,2]
     }));
 
+    model.add(tf.layers.conv2d({
+        kernelSize: 5,
+        filters: 16,
+        strides: 1,
+        activation: 'relu',
+        kernelInitializer: 'VarianceScaling'
+    }));
+
+    model.add(tf.layers.maxPool2d({
+        poolSize: [2,2],
+        strides: [2,2]
+    }));
+
     model.add(tf.layers.flatten())
+
     model.add(tf.layers.dense({
         units: 10,
         kernelInitializer: 'VarianceScaling',
@@ -40,7 +55,7 @@ function createModel(){
     createLogEntry('Starting compiling....')
     model.compile({
         optimizer: tf.train.sgd(0.15),
-        loss: 'cetegoricalCrossentropy'
+        loss: 'categoricalCrossentropy'
     })
     createLogEntry('Compiled')
 }
